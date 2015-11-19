@@ -1,0 +1,28 @@
+recObj1 = audiorecorder(48000,24,1)
+pause
+
+disp('BEGINNING OF RECORDING')
+recordblocking(recObj1, 4);
+stop(recObj1)
+disp('END OF RECORDING')
+y1 = getaudiodata(recObj1);
+z = hilbert(y1);
+env = abs(z);
+plot(env,'-g','linewidth',2);
+title('Recorded Signal env')
+ylabel('Amplitude (DB)')
+xlabel('Time (s)')
+hold on
+
+n=201; %WW must be an odd number
+numerator=zeros;
+average=zeros;
+for ii=1:length(env)-(2*((n-1)/2))
+    numerator(ii)=mean(env(ii:ii+n-1));
+end
+y1f3=numerator';
+figure(2)    
+plot(y1f3,'-b');
+title('Filtered Signal')
+ylabel('Amplitude (DB)')
+xlabel('Time (s)')
