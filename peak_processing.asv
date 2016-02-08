@@ -83,10 +83,10 @@ plot(time_speech_loc,speech_pk,'x')
 
 %create interpolated matrices
 max_pks_step = rec_time/length(max_pks);
-max_pks_t = [max_pks_step:max_pks_step:rec_time];
-interp_step = 0.001;
+max_pks_t = [max_pks_step:
+interp_step = 0.01;
 time_interp = [0:interp_step:rec_time];
-interp_data = interp1(max_pks_t,max_pks,time_interp);
+interp_data = interp1(time_max_peak,max_pks,time_interp);
 % for rr = 1:length(speech_loc)
 %     for qq = 1:length(interp_data)
 %         if interp_data(qq) == speech_loc(rr);
