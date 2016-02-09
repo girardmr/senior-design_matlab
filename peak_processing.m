@@ -82,30 +82,32 @@ hold on;
 plot(time_speech_loc,speech_pk,'x')
 
 %create interpolated matrices
-max_pks_step = rec_time/length(max_pks);
-max_pks_t = [max_pks_step:max_pks_step:rec_time];
+%max_pks_step = rec_time/length(max_pks);
+%max_pks_t = [max_pks_step:max_pks_step:rec_time];
 interp_step = 0.001;
 time_interp = [0:interp_step:rec_time];
-interp_data = interp1(max_pks_t,max_pks,time_interp);
-% for rr = 1:length(speech_loc)
-%     for qq = 1:length(interp_data)
-%         if interp_data(qq) == speech_loc(rr);
-%             speech_loc_interp(rr) = qq;
-%         end
-%     end
-% end
+interp_data = interp1(time_max_peak,max_pks,time_interp);
+% y4 = resample(y3,5000,length(y3)); %resample filtered data...smoothes it
+% % for rr = 1:length(speech_loc)
+% %     for qq = 1:length(interp_data)
+% %         if interp_data(qq) == speech_loc(rr);
+% %             speech_loc_interp(rr) = qq;
+% %         end
+% %     end
+% % end
 speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
-sp_loc_interp_t = speech_loc_interp*interp_step;
+% step_length = rec_time/length(y3);
+sp_loc_interp_t = speech_loc_interp*(interp_step);
 
 %locate indices of points 60% up waveform
 for kk = 1:length(speech_pk)
    ind_found = find(interp_data>((0.6*speech_pk(kk))-(0.05*speech_pk(kk))) & interp_data<=((0.6*speech_pk(kk))+(0.05*speech_pk(kk))));
-   %if there are only two indices found
+   %if there are only two indices foundpk_threshold
    if length(ind_found) == 2
        ind_60(kk) = ind_found(1);
    else %if there are more than two indices found
        for ll = 2:length(ind_found)
-           if ind_found(ll) < speech_loc_interp(kk)  
+           if ind_found(ll) < speech_loc_interp(kk) 
                ind_60(kk) = ind_found(ll);
            end
        end
@@ -113,6 +115,7 @@ for kk = 1:length(speech_pk)
 end
 %convert indices to time
 %index*step = time
+%step_length = rec_time/length(max_pks);
 for mm = 1:length(ind_60)
     t_60(mm) = ind_60(mm)*interp_step;
 end
