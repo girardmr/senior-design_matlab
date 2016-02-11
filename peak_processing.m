@@ -121,9 +121,7 @@ for kk = 1:length(speech_pk)
        end
    end
 end
-%convert indices to time
-%index*step = time
-%step_length = rec_time/length(max_pks);
+%remove indices that equal zero (means code is nonfunctional...)
 z = 1;
 for zz = 1:length(ind_60)
     if ind_60(zz) ~= 0
@@ -131,27 +129,28 @@ for zz = 1:length(ind_60)
         z = z+1;
     end
 end
+%convert indices to time
+%find associated amplitude
 for mm = 1:length(ind_60_new)
     t_60(mm) = ind_60_new(mm)*step_resample-step_resample;
     amp_60(mm) = y3_resample(ind_60_new(mm));
 end
-%find amplitude corresponding to 60% time points
-%for nn = 1:length(ind_60)
-    %for pp = 1:length(y3_resample)
-        %if ind_60(nn) == pp;
-            %amp_60(nn) = y3_resample(nn);
-        %end
-    %end
-%end
 %visualize 60% points
 hold on;
 plot(t_60,amp_60,'x');
-%plot(time_resample,y3_resample,'k.');
-%plot(speech_loc_resample_t,speech_pk,'g*');
 
-%plot(time_interp,interp_data,'k:');
-%figure;
-%plot(t,y3,'c',time_resample,y3_resample,'k:');
+%visualize 60% time points on y3
+figure;
+plot(t, y3, 'r',t_60,amp_60,'bx');
+
+% %visualize resampled y3
+% plot(time_resample,y3_resample,'k.');
+% %visualize speech peak locations in larger data set
+% plot(speech_loc_resample_t,speech_pk,'g*');
+% %visualize interpolated data
+% plot(time_interp,interp_data,'k:');
+% %visualize y3_resampled compared to y3
+% plot(t,y3,'c',time_resample,y3_resample,'k:');
 
     
          
