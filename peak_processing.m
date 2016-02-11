@@ -81,12 +81,12 @@ end
 hold on;
 plot(time_speech_loc,speech_pk,'x')
 
-%create interpolated matrices
-max_pks_step = rec_time/length(max_pks);
-max_pks_t = [max_pks_step:max_pks_step:rec_time];
-interp_step = 0.05;
-time_interp = [0:interp_step:rec_time];
-interp_data = interp1(max_pks_t,max_pks,time_interp);
+% %create interpolated matrices
+% max_pks_step = rec_time/length(max_pks);
+% max_pks_t = [max_pks_step:max_pks_step:rec_time];
+% interp_step = 0.05;
+% time_interp = [0:interp_step:rec_time];
+% interp_data = interp1(max_pks_t,max_pks,time_interp);
 % y4 = resample(y3,5000,length(y3)); %resample filtered data...smoothes it
 % % for rr = 1:length(speech_loc)
 % %     for qq = 1:length(interp_data)
@@ -95,15 +95,17 @@ interp_data = interp1(max_pks_t,max_pks,time_interp);
 % %         end
 % %     end
 % % end
-speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
+%speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
 % step_length = rec_time/length(y3);
-sp_loc_interp_t = speech_loc_interp*(interp_step);
+%sp_loc_interp_t = speech_loc_interp*(interp_step);
 
-%resample y3 -- made same size as max_pks 
-size_resample = length(max_pks);
+%resample y3  
+size_resample = 500;
 y3_resample = resample(y3,size_resample,length(y3))';
 step_resample = rec_time/size_resample;
 time_resample = [0:step_resample:rec_time-step_resample];
+speech_loc_resample = round(speech_loc*(size_resample/length(max_pks)));
+speech_loc_resample_t = speech_loc_resample*step_resample-step_resample;
 
 %locate indices of points 60% up waveform
 for kk = 1:length(speech_pk)
@@ -113,7 +115,7 @@ for kk = 1:length(speech_pk)
        ind_60(kk) = ind_found(1);
    else %if there are more than two indices found
        for ll = 2:length(ind_found)
-           if ind_found(ll) < speech_loc(kk) 
+           if ind_found(ll) < speech_loc_resample(kk) 
                ind_60(kk) = ind_found(ll);
            end
        end
@@ -144,9 +146,9 @@ end
 %visualize 60% points
 hold on;
 plot(t_60,amp_60,'x');
-plot(time_resample,y3_resample,'k:');
+%plot(time_resample,y3_resample,'k.');
+%plot(speech_loc_resample_t,speech_pk,'g*');
 
-%plot(sp_loc_interp_t,speech_pk,'g*');
 %plot(time_interp,interp_data,'k:');
 %figure;
 %plot(t,y3,'c',time_resample,y3_resample,'k:');
