@@ -99,9 +99,9 @@ speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
 % step_length = rec_time/length(y3);
 sp_loc_interp_t = speech_loc_interp*(interp_step);
 
-size_resample = 100;
-y3_resample = resample(y3,size_resample,length(y3))';
-time_resample = [0:(rec_time/size_resample):rec_time-(rec_time/size_resample)];
+size_resample = 5000;
+y3_resample = resample(y3,size_resample,length(y3));
+time_resample = [0:
 
 %locate indices of points 60% up waveform
 for kk = 1:length(speech_pk)
@@ -136,8 +136,6 @@ hold on;
 plot(t_60,amp_60,'x');
 plot(sp_loc_interp_t,speech_pk,'g*');
 plot(time_interp,interp_data,'k:');
-figure;
-plot(t,y3,'c',time_resample,y3_resample,'k:');
 
     
          
