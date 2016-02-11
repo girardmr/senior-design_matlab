@@ -99,19 +99,21 @@ speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
 % step_length = rec_time/length(y3);
 sp_loc_interp_t = speech_loc_interp*(interp_step);
 
-size_resample = 100;
+%resample y3 -- made same size as max_pks 
+size_resample = length(max_pks);
 y3_resample = resample(y3,size_resample,length(y3))';
-time_resample = [0:(rec_time/size_resample):rec_time-(rec_time/size_resample)];
+step_resample = rec_time/size_resample;
+time_resample = [0:step_resample:rec_time-step_resample];
 
 %locate indices of points 60% up waveform
 for kk = 1:length(speech_pk)
-   ind_found = find(interp_data>((0.6*speech_pk(kk))-(0.05*speech_pk(kk))) & interp_data<=((0.6*speech_pk(kk))+(0.05*speech_pk(kk))));
-   %if there are only two indices foundpk_threshold
+   ind_found = find(y3_resample>((0.6*speech_pk(kk))-(0.15*speech_pk(kk))) & y3_resample<=((0.6*speech_pk(kk))+(0.15*speech_pk(kk))));
+   %if there are only two indices found
    if length(ind_found) == 2
        ind_60(kk) = ind_found(1);
    else %if there are more than two indices found
        for ll = 2:length(ind_found)
-           if ind_found(ll) < speech_loc_interp(kk) 
+           if ind_found(ll) < speech_loc(kk) 
                ind_60(kk) = ind_found(ll);
            end
        end
@@ -120,24 +122,34 @@ end
 %convert indices to time
 %index*step = time
 %step_length = rec_time/length(max_pks);
-for mm = 1:length(ind_60)
-    t_60(mm) = ind_60(mm)*interp_step;
-end
-%find amplitude corresponding to 60% time points
-for nn = 1:length(ind_60)
-    for pp = 1:length(interp_data)
-        if ind_60(nn) == pp;
-            amp_60(nn) = interp_data(pp);
-        end
+z = 1;
+for zz = 1:length(ind_60)
+    if ind_60(zz) ~= 0
+        ind_60_new(z) = ind_60(zz);
+        z = z+1;
     end
 end
+for mm = 1:length(ind_60_new)
+    t_60(mm) = ind_60_new(mm)*step_resample-step_resample;
+    amp_60(mm) = y3_resample(ind_60_new(mm));
+end
+%find amplitude corresponding to 60% time points
+%for nn = 1:length(ind_60)
+    %for pp = 1:length(y3_resample)
+        %if ind_60(nn) == pp;
+            %amp_60(nn) = y3_resample(nn);
+        %end
+    %end
+%end
 %visualize 60% points
 hold on;
 plot(t_60,amp_60,'x');
-plot(sp_loc_interp_t,speech_pk,'g*');
-plot(time_interp,interp_data,'k:');
-figure;
-plot(t,y3,'c',time_resample,y3_resample,'k:');
+plot(time_resample,y3_resample,'k:');
+
+%plot(sp_loc_interp_t,speech_pk,'g*');
+%plot(time_interp,interp_data,'k:');
+%figure;
+%plot(t,y3,'c',time_resample,y3_resample,'k:');
 
     
          
