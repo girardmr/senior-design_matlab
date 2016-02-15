@@ -2,6 +2,8 @@ close all;
 clear all;
 clc;
 
+% Collect data
+
 %record audio
 samplingrate = 44100;
 recObj = audiorecorder(samplingrate, 16, 1);
@@ -27,6 +29,9 @@ t = [0:step:rec_time-step];
 figure;
 plot(t,env,'r');
 title('Envelope of raw data')
+
+%% 
+%Locate speech peaks
 
 %peak values and their locations
 [pks, loc] = findpeaks(y3);
@@ -95,6 +100,9 @@ end
 hold on;
 plot(time_speech_loc_2,speech_pk_2,'x')
 
+%%
+
+%Locate speech beat
 
 %resample y3  
 size_resample = 500;
@@ -141,7 +149,47 @@ figure;
 plot(t, y3, 'r',t_60,amp_60,'bx');
 title('Speech beat location, y3');
 
+%%
 
+%Circular Statistics
+%Nuclear Synchrony
 
-    
+%Regroup speech beats by syllable of phrase...only works for 3 syllable
+%phrases
+syllable1 = t_60(1:3:end);
+syllable2 = t_60(2:3:end);
+syllable3 = t_60(3:3:end);
+
+%Difference in time between every first syllable
+syl1_ind = 1;
+for q = 2:length(syllable1)
+    diff_syl1(syl1_ind) = syllable1(q)-syllable1(q-1);
+    syl1_ind = syl1_ind+1;
+end
+%Difference in time between first and second syllables and first and third
+%syllables.
+for r = 1:length(syllable2)
+    diff_syl1_syl2(r) = syllable2(r) - syllable1(r);
+    diff_syl1_syl3(r) = syllable3(r) - syllable1(r);
+end
+
+%???Phase of second (diff_syl1_syl2 divided by diff_syl1) and third syllables (diff_syl1_syl2 divided by diff_syl1)
+for ss = 1:length(diff_syl1_syl2)
+    phase(ss) = diff_syl1_syl2(ss)/diff_syl1_syl3(ss);
+end
+%Nuclear Synchrony score = average of phase;
+Nuclear_Synchrony = mean(phase);
+
+%Rose plot
+figure;
+subplot(1,2,1);
+h1 = rose(phase*2*pi,30);
+x1 = get(h1,'Xdata');
+y1 = get(h1,'Ydata');
+g1 = patch(x1,y1,'b');
+title('Nuclear Synchrony')
+
+score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
+h2 = msgbox(score_str);
+
          
