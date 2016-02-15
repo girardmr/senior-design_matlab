@@ -19,7 +19,7 @@ env = abs(z);
 nyquist = samplingrate/2; 
 cutlp2 = 5; %Sets 5 Hz cutoff frequency
 Wn3 = cutlp2/nyquist; %normalizes cutoff to work with butter func.
-[a3,b3] = butter(1,Wn3); %produces transfer coefficients for 5 Hz lowpass
+[a3,b3] = butter(1,Wn3tgfdffbhh); %produces transfer coefficients for 5 Hz lowpass
 y3 = filter(a3,b3,env); %filters data labeled 'env'
 %created time vector associated with envelope
 step = rec_time/numel(y3);
@@ -174,7 +174,57 @@ for r = 1:length(syllable2)
 end
 
 %???Phase of second (diff_syl1_syl2 divided by diff_syl1) and third syllables (diff_syl1_syl2 divided by diff_syl1)
-for ss = 1:length(diff_syl1)
-    phase(ss) = 
-    
+for ss = 1:length(diff_syl1_syl2)
+    phase(ss) = diff_syl1_syl2(ss)/diff_syl1_syl3(ss);
+end
+%Nuclear Synchrony score = average of phase;
+Nuclear_Synchrony = mean(phase);
+
+%Rose plot
+figure;
+subplot(1,2,1);
+h1 = rose(phase*2*pi,30);
+x1 = get(h1,'Xdata');
+y1 = get(h1,'Ydata');
+g1 = patch(x1,y1,'b');
+title('Nuclear Synchrony')
+
+score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
+h2 = msgbox(score_str);
+
+
+%%
+%Import Metronome track
+
+[metronome, Fs_m] = audioread('tamborine_90bpm_4-4time_20beats_stereo_LEkFjP.mp3');
+env_m = abs(hilbert(metronome));
+step_m = 1/Fs_m;
+time_met = [1:1:length(metronome)]*step_m;
+figure;
+plot(time_met,env_m);
+
+%%
+%Identify peaks of metronome
+
+[pks_m, loc_m] = findpeaks(env_m,'MinPeakHeight',1.5);
+
+met_ind = 2;
+loc_m_2(1) = loc_m(1);
+pks_m_2(1) = pks_m(1);
+for pp = 2:length(loc_m)
+    m_diff = loc_m(pp) - loc_m(pp-1);
+    if m_diff > 0.2*10^5
+        loc_m_2(met_ind) = loc_m(pp);
+        pks_m_2(met_ind) = pks_m(pp);
+        met_ind = met_ind+1;
+    end
+end
+time_met_2 = loc_m_2*step_m;
+hold on;
+plot(time_met_2,pks_m_2,'rx');
+figre;
+plot(t, y3, 'r',time_met,'bx');
+
+
+
          

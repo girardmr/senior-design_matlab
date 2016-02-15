@@ -52,3 +52,4 @@ circvect1=circ_r((2*pi*phase1),[],[],1)
 circvect2=circ_r((2*pi*phase2),[],[],1)
 
 save 'choc_beats_regroup.mat'
+

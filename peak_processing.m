@@ -192,4 +192,44 @@ title('Nuclear Synchrony')
 score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
 h2 = msgbox(score_str);
 
+
+%%
+%Import Metronome track
+
+[metronome, Fs_m] = audioread('tamborine_90bpm_4-4time_20beats_stereo_LEkFjP.mp3');
+env_m = abs(hilbert(metronome));
+step_m = 1/Fs_m;
+time_met = [1:1:length(metronome)]*step_m;
+figure;
+plot(time_met,env_m);
+
+%%
+%Identify peaks of metronome
+
+[pks_m, loc_m] = findpeaks(env_m,'MinPeakHeight',1.5);
+
+met_ind = 2;
+loc_m_2(1) = loc_m(1);
+pks_m_2(1) = pks_m(1);
+for pp = 2:length(loc_m)
+    m_diff = loc_m(pp) - loc_m(pp-1);
+    if m_diff > 0.2*10^5
+        loc_m_2(met_ind) = loc_m(pp);
+        pks_m_2(met_ind) = pks_m(pp);
+        met_ind = met_ind+1;
+    end
+end
+time_met_2 = loc_m_2*step_m;
+hold on;
+plot(time_met_2,pks_m_2,'rx');
+figure;
+plot(t_60,0.1,'ro',time_met_2,0.1,'bx'); %red = speech beats, blue = metronome 
+
+
+%%
+%Global Synchrony
+
+
+
+
          
