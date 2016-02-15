@@ -7,7 +7,7 @@ clc;
 %record audio
 samplingrate = 44100;
 recObj = audiorecorder(samplingrate, 16, 1);
-rec_time = 5; 
+rec_time = 12; 
 disp('Begin Speaking.');
 recordblocking(recObj, rec_time);
 disp('End of Recording.');
@@ -222,8 +222,10 @@ end
 time_met_2 = loc_m_2*step_m;
 hold on;
 plot(time_met_2,pks_m_2,'rx');
+title('Metronome Peaks');
 figure;
 plot(t_60,0.1,'ro',time_met_2,0.1,'bx'); %red = speech beats, blue = metronome 
+title('Metronome beat vs Speech beat');
 
 
 %%

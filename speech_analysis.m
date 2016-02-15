@@ -1,25 +1,18 @@
-close all;
-clear all;
-clc;
+function speech_analysis(speech_file, metronome_track)
 
-% Collect data
-
-%record audio
+%MUST AUTOMATE
 samplingrate = 44100;
-recObj = audiorecorder(samplingrate, 16, 1);
-rec_time = 5; 
-disp('Begin Speaking.');
-recordblocking(recObj, rec_time);
-disp('End of Recording.');
-y = getaudiodata(recObj);
+rec_time = 12;
+
+%LOAD SPEECH FILE
 
 %envelope
-z = hilbert(y);
+z = hilbert(speech_file);
 env = abs(z);
 nyquist = samplingrate/2; 
 cutlp2 = 5; %Sets 5 Hz cutoff frequency
 Wn3 = cutlp2/nyquist; %normalizes cutoff to work with butter func.
-[a3,b3] = butter(1,Wn3tgfdffbhh); %produces transfer coefficients for 5 Hz lowpass
+[a3,b3] = butter(1,Wn3); %produces transfer coefficients for 5 Hz lowpass
 y3 = filter(a3,b3,env); %filters data labeled 'env'
 %created time vector associated with envelope
 step = rec_time/numel(y3);
@@ -194,7 +187,9 @@ h2 = msgbox(score_str);
 
 
 %%
-%Import Metronome track
+%Load Metronome track
+
+metronome
 
 [metronome, Fs_m] = audioread('tamborine_90bpm_4-4time_20beats_stereo_LEkFjP.mp3');
 env_m = abs(hilbert(metronome));
@@ -222,9 +217,13 @@ end
 time_met_2 = loc_m_2*step_m;
 hold on;
 plot(time_met_2,pks_m_2,'rx');
-figre;
-plot(t, y3, 'r',time_met,'bx');
+title('Metronome Peaks');
+figure;
+plot(t_60,0.1,'ro',time_met_2,0.1,'bx'); %red = speech beats, blue = metronome 
+title('Metronome beat vs Speech beat');
 
 
+%%
+%Global Synchrony
 
-         
+
