@@ -38,7 +38,7 @@ end
 %plot peaks against time
 figure;
 plot(time_loc, pks);
-title('Plot of peaks located by findpeaks');
+title('Plot of peaks located by findpeaks, post filtering');
 
 %Smooth signal
 n = 0;
@@ -95,23 +95,6 @@ end
 hold on;
 plot(time_speech_loc_2,speech_pk_2,'x')
 
-% %create interpolated matrices
-% max_pks_step = rec_time/length(max_pks);
-% max_pks_t = [max_pks_step:max_pks_step:rec_time];
-% interp_step = 0.05;
-% time_interp = [0:interp_step:rec_time];
-% interp_data = interp1(max_pks_t,max_pks,time_interp);
-% y4 = resample(y3,5000,length(y3)); %resample filtered data...smoothes it
-% % for rr = 1:length(speech_loc)
-% %     for qq = 1:length(interp_data)
-% %         if interp_data(qq) == speech_loc(rr);
-% %             speech_loc_interp(rr) = qq;
-% %         end
-% %     end
-% % end
-%speech_loc_interp = round(speech_loc*(length(interp_data)/length(max_pks)));
-% step_length = rec_time/length(y3);
-%sp_loc_interp_t = speech_loc_interp*(interp_step);
 
 %resample y3  
 size_resample = 500;
@@ -156,15 +139,9 @@ plot(t_60,amp_60,'x');
 %visualize 60% time points on y3
 figure;
 plot(t, y3, 'r',t_60,amp_60,'bx');
+title('Speech beat location, y3');
 
-% %visualize resampled y3
-% plot(time_resample,y3_resample,'k.');
-% %visualize speech peak locations in larger data set
-% plot(speech_loc_resample_t,speech_pk,'g*');
-% %visualize interpolated data
-% plot(time_interp,interp_data,'k:');
-% %visualize y3_resampled compared to y3
-% plot(t,y3,'c',time_resample,y3_resample,'k:');
+
 
     
          
