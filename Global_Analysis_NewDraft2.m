@@ -16,7 +16,7 @@ for i=1:length(subj)
 end
 
 phrases=fieldnames(choc_beats_regroup.(subj{1}));
-type=fieldnames(choc_beats_regroup.(subj{1}).(phrases{1}));
+type=fieldnames(choc_beats_regroup.(subj{1}).(phrases{1})); 
 
 asynch1=[];
 asynch2=[];
@@ -25,17 +25,17 @@ for i=1:length(subj)
     for j=1:length(phrases)
         metrovect1=[];
         metrovect2=[];
-        for k=1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a)
-            if (i==10 && j==2)
+        for k=1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a) %first syllable
+            if (i==10 && j==2) %10th subject, second phrase 
                 newvect1=choc_beats_regroup.(subj{i}).(phrases{j}).(type{2})(6:2:end);
-                metrovect1=newvect1(1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a));
+                metrovect1=newvect1(1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a)); %first syllables, cut down to the length of fist syllables
                 newvect2=choc_beats_regroup.(subj{i}).(phrases{j}).(type{2})(7:2:end);
                 newvect2=vertcat(newvect2,(newvect2(end)+0.666));
                 metrovect2=newvect2(1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a));
                 choc_beats_regroup.(subj{i}).(phrases{j}).globals.metrovect1=metrovect1;
                 choc_beats_regroup.(subj{i}).(phrases{j}).globals.metrovect2=metrovect2;
             else
-                holdvalue=choc_beats_regroup.(subj{i}).(phrases{j}).(type{5}).aidx(1);
+                holdvalue=choc_beats_regroup.(subj{i}).(phrases{j}).(type{5}).aidx(1); %aind?...=9
                 newvect1=choc_beats_regroup.(subj{i}).(phrases{j}).(type{2})(holdvalue:2:end);
                 metrovect1=newvect1(1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a));
                 newvect2=choc_beats_regroup.(subj{i}).(phrases{j}).(type{2})((holdvalue+1):2:end);

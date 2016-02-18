@@ -4,10 +4,17 @@ function speech_analysis(speech_file, metronome_track)
 samplingrate = 44100;
 rec_time = 12;
 
-%LOAD SPEECH FILE
+%Load speech file. Load metronome track.
+speech_import = load(speech_file);
+speech_names = fieldnames(speech_import);
+speech_data = speech_import.(speech_names{1});
+
+metronome_import = load(metronome_track);
+metronome_names = fieldnames(metronome_import);
+metronome_data = metronome_import.(metronome_names{1});
 
 %envelope
-z = hilbert(speech_file);
+z = hilbert(speech_data);
 env = abs(z);
 nyquist = samplingrate/2; 
 cutlp2 = 5; %Sets 5 Hz cutoff frequency
@@ -188,8 +195,6 @@ h2 = msgbox(score_str);
 
 %%
 %Load Metronome track
-
-metronome
 
 [metronome, Fs_m] = audioread('tamborine_90bpm_4-4time_20beats_stereo_LEkFjP.mp3');
 env_m = abs(hilbert(metronome));
