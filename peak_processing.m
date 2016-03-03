@@ -181,17 +181,17 @@ end
 Nuclear_Synchrony = mean(phase);
 
 %Rose plot
-figure;
-subplot(1,2,1);
+figure(5);
+subplot(1,3,1);
 h1 = rose(phase*2*pi,30);
 x1 = get(h1,'Xdata');
 y1 = get(h1,'Ydata');
 g1 = patch(x1,y1,'b');
 title('Nuclear Synchrony')
-
 score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
-h2 = msgbox(score_str);
+nuclear_text = uicontrol('Style','text','Position',[220 40 200 100],'String',score_str); %Position: [x y length_box height_box?]
 
+%h2 = msgbox(score_str);
 
 %%
 %Import Metronome track
@@ -233,6 +233,56 @@ title('Metronome beat vs Speech beat');
 
 syl1_first_ind = ind_60_new(1);
 syl3_first_ind = ind_60_new(3);
+
+num_phrases = length(syllable1);
+met_track_length = 2*num_phrases;
+met_track = time_met_2(syl1_first_ind:syl1_first_ind+met_track_length);
+met_beat1 = met_track(1:2:end);
+met_beat2 = met_track(2:2:end);
+
+cc = 1;
+for yy = 1:length(syllable1)
+    syl1_metbeat1 = abs(syllable1(yy) - met_beat1(yy));
+    syl3_metbeat2 = abs(syllable3(yy) - met_beat2(yy));
+    if syl1_metbeat1 < 0.666 && syl3_metbeat2 < 0.666 %0.666 taken from alison's code
+        time_dif_beat1(cc) = syl1_metbeat1(yy);
+        time_dif_beat2(cc) = syl3_metbeat2(yy);
+        cc = cc+1;
+    end
+end
+
+phase1 = time_dif_beat1./0.666;
+phase2 = time_dif_beat2./0.666;
+phase_all = vertcat(phase1,phase2);
+Global_Synchrony = mean(phase_all);
+
+figure(5);
+subplot(1,3,2);
+h3 = rose((phase1*2*pi));
+x3 = get(h3,'Xdata');
+y3 = get(h3,'Ydata');
+g3 = patch(x3,y3,'b');
+title('Global Synchrony: First Syllable');
+global_score_str1 = sprintf('Global Synchrony Score, Beat 1: %f', mean(phrase1));
+global_text1 = uicontrol('Style','text','Position',[440 15 200 100],'String',global_score_str1);
+
+figure(5);
+subplot(1,3,3);
+h4 = rose((phase2*2*pi));
+x4 = get(h4,'Xdata');
+y4 = get(h4,'Ydata');
+g4 = patch(x4,y4,'b');
+title('Global Synchrony: Third Syllable');
+global_score_str2 = sprintf('Global Synchrony Score, Beat 3: %f', mean(phrase2));
+global_text2 = uicontrol('Style','text','Position',[660 15 200 100],'String',global_score_str1);
+global_score_all_str = sprintf('Global Synchrony Score, All: %f', Global_Synchrony);
+global_text_all = uicontrol('Style','text','Position',[550 10 200 100],'String',global_score_all_str);
+
+%circvect ????
+
+%global_score_str = sprintf('Global Synchrony Score: %f', Global_Synchrony);
+%h5 = msgbox(global_score_str);
+
 
 
 

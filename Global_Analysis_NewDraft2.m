@@ -25,7 +25,7 @@ for i=1:length(subj)
     for j=1:length(phrases)
         metrovect1=[];
         metrovect2=[];
-        for k=1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a) %first syllable
+        for k=1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a) %first syllable... number of first ayllables = number of phrases 
             if (i==10 && j==2) %10th subject, second phrase 
                 newvect1=choc_beats_regroup.(subj{i}).(phrases{j}).(type{2})(6:2:end);
                 metrovect1=newvect1(1:length(choc_beats_regroup.(subj{i}).(phrases{j}).(type{4}).a)); %first syllables, cut down to the length of fist syllables
