@@ -40,10 +40,10 @@ time_loc = zeros(length(loc),1);
 for jj = 1:length(loc)
     time_loc(jj) = loc(jj)*step-step;
 end
-%plot peaks against time
-figure(2);
-plot(time_loc, pks);
-title('Plot of peaks located by findpeaks, post filtering');
+% %plot peaks against time
+% figure(2);
+% plot(time_loc, pks);
+% title('Plot of peaks located by findpeaks, post filtering');
 
 %Smooth signal
 n = 0;
@@ -101,25 +101,24 @@ end
 hold on;
 plot(time_speech_loc_2,speech_pk_2,'x')
 hold off;
-check_locations = speech_loc_2
 
 %% Hand Adjustments
 
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No','Yes');
 if q_adjust == 'No'
-    fprintf('Click on the correct speech peaks for the entire waveform. Press the Return key when finished. \n');
+    %fprintf('Click on the correct speech peaks for the entire waveform. Press the Return key when finished. \n');
+    uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Press the Return key when finished.'},'modal'));
     clear time_speech_loc_2 speech_pk_2 speech_loc_2
     figure(3);
     plot(time_max_peak,max_pks,'m');
     [time_speech_loc_2, speech_pk_2] = ginput;
+    step_max_pks = rec_time/length(max_pks);
     for mm = 1:length(time_speech_loc_2)
-        speech_loc_2(mm) = time_speech_loc_2(mm)/step;
+        speech_loc_2(mm) = round(time_speech_loc_2(mm)/step_max_pks);
     end
     figure(3);
     plot(time_max_peak,max_pks,'m',time_speech_loc_2,speech_pk_2,'bx')
 end
-
-%%convert peak times back to indices***
 
 %%
 
@@ -163,15 +162,15 @@ for mm = 1:length(ind_60_new)
 end
 %visualize 60% points
 hold on;
-plot(t_60,amp_60,'x');
+plot(t_60,amp_60,'gx');
 hold off;
 
 % %visualize 60% time points on y3
-figure(4);
-hold on
-plot(time_speech_loc,speech_pk,'go')
-plot(time_resample, y3_resample, 'r',time_resample, y3_resample,'k.',t_60,amp_60,'bx');
-title('Speech beat location, y3');
+% figure(4);
+% hold on
+% plot(time_speech_loc,speech_pk,'go')
+% plot(time_resample, y3_resample, 'r',time_resample, y3_resample,'k.',t_60,amp_60,'bx');
+% title('Speech beat location, y3');
 
 %%
 
