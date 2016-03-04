@@ -104,8 +104,8 @@ hold off;
 
 %% Hand Adjustments
 
-q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
-if q_adjust == ['No ']
+q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No','Yes');
+if q_adjust == 'No'
     %fprintf('Click on the correct speech peaks for the entire waveform. Press the Return key when finished. \n');
     uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Press the Return key when finished.'},'modal'));
     clear time_speech_loc_2 speech_pk_2 speech_loc_2
@@ -118,7 +118,7 @@ if q_adjust == ['No ']
     end
     figure(3);
     plot(time_max_peak,max_pks,'m',time_speech_loc_2,speech_pk_2,'bx')
-elseif q_adjust == ['Yes']
+else q_adjust
     speech_loc_2 = speech_loc_2;
     time_speech_loc_2 = time_speech_loc_2;
     speech_pk_2 = speech_pk_2;
@@ -286,7 +286,7 @@ met_beat2_ind = met_track(2:2:end);
 met_beat2 = met_beat2_ind*step_m;
 
 cc = 1;
-for yy = 1:num_phrases %changed from length(syllable1)
+for yy = 1:length(syllable3) %changed from length(syllable1)
     syl1_metbeat1(yy) = abs(syllable1(yy) - met_beat1(yy));
     syl3_metbeat2(yy) = abs(syllable3(yy) - met_beat2(yy));
     if (syl1_metbeat1(yy) < 0.666) && (syl3_metbeat2(yy) < 0.666) %0.666 taken from alison's code
