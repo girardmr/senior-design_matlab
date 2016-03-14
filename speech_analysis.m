@@ -57,7 +57,7 @@ n = 0;
 pk_ind = 1;
 temp_max_peak = 0;
 counter = 1;
-t_division = 0.015;
+t_division = 0.025;
 while counter < (rec_time/t_division+1)
 %only look at t_division (0.05 seconds) of data at a time
 for ii = 1:length(time_loc)
@@ -114,7 +114,7 @@ hold off;
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
 if q_adjust == ['No ']
     %fprintf('Click on the correct speech peaks for the entire waveform. Press the Return key when finished. \n');
-    uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Press the Return key when finished.'},'modal'));
+    uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
     clear time_speech_loc_2 speech_pk_2 speech_loc_2
     figure(3);
     plot(time_max_peak,max_pks,'m');
@@ -202,7 +202,7 @@ for q = 2:length(syllable1)
 end
 %Difference in time between first and second syllables and first and third
 %syllables.
-for r = 1:length(syllable2)
+for r = 1:length(syllable3)
     diff_syl1_syl2(r) = syllable2(r) - syllable1(r);
     diff_syl1_syl3(r) = syllable3(r) - syllable1(r);
 end
