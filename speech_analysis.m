@@ -1,4 +1,11 @@
-function speech_analysis(speech_file, metronome_track, sampling_rate)
+function speech_analysis(speech_file, metronome_track, sampling_rate, metronome_type)
+% SPEECH_ANALYSIS Calculate the nuclear and global synchrony scores for a
+% given speech file and corresponding metronome track. 
+%   SPEECH_FILE: speech track to be imported. Use single quotes ('').
+%   METRONOME_TRACK: metronome track to be imported. Use single quotes
+%   ('').
+%   SAMPLING_RATE: sampling frequency in Hz.
+%   METRONOME_TYPE: 0.5 for half note, 1 for whole note.
 
 %Load speech file. Load metronome track.
 speech_import = load(speech_file);
@@ -280,6 +287,10 @@ elseif met_first_ind+met_track_length == length(loc_m_2)
 elseif met_first_ind+met_track_length > length(loc_m_2)
     met_track = loc_m_2(met_first_ind:end);
 end
+
+%% chocolate analysis 
+if metronome_type == 0.5
+    
 met_beat1_ind = met_track(1:2:end);
 met_beat1 = met_beat1_ind*step_m;
 met_beat2_ind = met_track(2:2:end);
@@ -323,5 +334,40 @@ global_text2 = uicontrol('Style','text','Position',[1000 40 200 100],'String',gl
 global_score_all_str = sprintf('Global Synchrony Score, All: %f', Global_Synchrony);
 global_text_all = uicontrol('Style','text','Position',[805 5 200 100],'String',global_score_all_str);
 
-%h2 = msgbox(score_str); %global_score_str1, global_score_str2, global_score_all_str);
+%% vanilla analysis
+elseif metronome_type == 1
+    
+cc = 1;
+for yy = 1:num_phrases %changed from length(syllable1)
+    syl_metbeat(yy) = abs(syllable1(yy) - met_track(yy));
+    if (syl_metbeat(yy) < 0.666)  %0.666 taken from alison's code
+        time_dif_beat1(cc) = syl_metbeat(yy);
+        cc = cc+1;
+    end
+end    
 
+phase1 = time_dif_beat1./0.666;
+Global_Synchrony = mean(phase1);
+
+%Rose plot: nuclear
+figure(5);
+subplot(1,2,1);
+h1 = rose(phase*2*pi,30);
+x1 = get(h1,'Xdata');
+y1 = get(h1,'Ydata');
+g1 = patch(x1,y1,'b');
+title('Nuclear Synchrony')
+score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
+nuclear_text = uicontrol('Style','text','Position',[400 40 200 100],'String',score_str); %Position: [x y length_box height_box?]
+%Rose plot: global
+figure(5);
+subplot(1,2,2);
+h3 = rose((phase1*2*pi));
+x3 = get(h3,'Xdata');
+y3 = get(h3,'Ydata');
+g3 = patch(x3,y3,'b');
+title('Global Synchrony');
+global_score_str1 = sprintf('Global Synchrony Score: %f', Global_Synchrony);
+global_text1 = uicontrol('Style','text','Position',[800 40 200 100],'String',global_score_str1);
+
+end
