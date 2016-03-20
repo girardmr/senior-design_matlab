@@ -212,7 +212,10 @@ for ss = 1:length(diff_syl1_syl2)
     phase(ss) = diff_syl1_syl2(ss)/diff_syl1_syl3(ss);
 end
 %Nuclear Synchrony score = average of phase;
-Nuclear_Synchrony = mean(phase);
+Nuclear_Synchrony = circ_r(2*pi*phase',[],[],1);
+
+% mean_phase = mean(phase);
+% circmean = circ_mean(phase', []);
 
 %Rose plot
 figure(5);
@@ -221,6 +224,7 @@ h1 = rose(phase*2*pi,30);
 x1 = get(h1,'Xdata');
 y1 = get(h1,'Ydata');
 g1 = patch(x1,y1,'b');
+reducepatch(g1, 0.5);
 title('Nuclear Synchrony')
 score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
 nuclear_text = uicontrol('Style','text','Position',[220 40 200 100],'String',score_str); %Position: [x y length_box height_box?]
@@ -310,7 +314,7 @@ end
 phase1 = time_dif_beat1./0.666;
 phase2 = time_dif_beat2./0.666;
 phase_all = vertcat(phase1',phase2');
-Global_Synchrony = mean(phase_all);
+Global_Synchrony = circ_r(phase_all,[],[],1);
 
 figure(5);
 subplot(1,3,2);
@@ -318,8 +322,9 @@ h3 = rose((phase1*2*pi));
 x3 = get(h3,'Xdata');
 y3 = get(h3,'Ydata');
 g3 = patch(x3,y3,'b');
+reducepatch(g3, 0.5);
 title('Global Synchrony: First Syllable');
-global_score_str1 = sprintf('Global Synchrony Score, Beat 1: %f', mean(phase1));
+global_score_str1 = sprintf('Global Synchrony Score, Beat 1: %f', circ_r(phase1',[],[],1));
 global_text1 = uicontrol('Style','text','Position',[615 40 200 100],'String',global_score_str1);
 
 figure(5);
@@ -328,8 +333,9 @@ h4 = rose((phase2*2*pi));
 x4 = get(h4,'Xdata');
 y4 = get(h4,'Ydata');
 g4 = patch(x4,y4,'b');
+reducepatch(g4, 0.5); %reduces original number of patches by 50%
 title('Global Synchrony: Third Syllable');
-global_score_str2 = sprintf('Global Synchrony Score, Beat 3: %f', mean(phase2));
+global_score_str2 = sprintf('Global Synchrony Score, Beat 3: %f', circ_r(phase2',[],[],1));
 global_text2 = uicontrol('Style','text','Position',[1000 40 200 100],'String',global_score_str2);
 global_score_all_str = sprintf('Global Synchrony Score, All: %f', Global_Synchrony);
 global_text_all = uicontrol('Style','text','Position',[805 5 200 100],'String',global_score_all_str);
@@ -347,7 +353,7 @@ for yy = 1:num_phrases %changed from length(syllable1)
 end    
 
 phase1 = time_dif_beat1./0.666;
-Global_Synchrony = mean(phase1);
+Global_Synchrony = circ_r(phase1',[],[],1);
 
 %Rose plot: nuclear
 figure(5);
@@ -356,6 +362,7 @@ h1 = rose(phase*2*pi,30);
 x1 = get(h1,'Xdata');
 y1 = get(h1,'Ydata');
 g1 = patch(x1,y1,'b');
+reducepatch(g1, 0.5);
 title('Nuclear Synchrony')
 score_str = sprintf('Nuclear Synchrony Score: %f', Nuclear_Synchrony);
 nuclear_text = uicontrol('Style','text','Position',[400 40 200 100],'String',score_str); %Position: [x y length_box height_box?]
@@ -366,6 +373,7 @@ h3 = rose((phase1*2*pi));
 x3 = get(h3,'Xdata');
 y3 = get(h3,'Ydata');
 g3 = patch(x3,y3,'b');
+reducepatch(g3, 0.5);
 title('Global Synchrony');
 global_score_str1 = sprintf('Global Synchrony Score: %f', Global_Synchrony);
 global_text1 = uicontrol('Style','text','Position',[800 40 200 100],'String',global_score_str1);
