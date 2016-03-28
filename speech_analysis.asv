@@ -158,14 +158,8 @@ if q_adjust == ['No ']
     %first division
     subplot(2,2,1);
     plot(time_div1, pks_div1,'m',speech_t_div1,speech_pk_div1,'gx');
-    subplot(2,2,2);
-    plot(time_div2, pks_div2,'m')
-    subplot(2,2,3);
-    plot(time_div3, pks_div3,'m')
-    subplot(2,2,4);
-    plot(time_div4, pks_div4,'m')
     %add other plots here?
-    q_adjust1 = questdlg('Are the green peaks correct?','Hand Adjustment 1','Yes','No ','Yes');
+    q_adjust1 = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
     if q_adjust1 == ['No ']
         uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
         figure(4);
@@ -177,14 +171,14 @@ if q_adjust == ['No ']
         for mm = 1:length(speech_t_div1)
             speech_loc_div1(mm) = round(speech_t_div1(mm)/step_div1);
         end
-    elseif q_adjust1 == ['Yes']
+        figure(4);
+        subplot(2,2,1);
+        plot(time_div1, pks_div1,'m',speech_t_div1,speech_pk_div1,'bx');
+    elseif qadjust1 == ['Yes']
         speech_loc_div1 = speech_loc_div1;
         speech_t_div1 = speech_t_div1;
         speech_pk_div1 = speech_pk_div1;
     end
-    figure(4);
-    subplot(2,2,1);
-    plot(time_div1, pks_div1,'m',speech_t_div1,speech_pk_div1,'bx');
     [row col] = size(speech_loc_div1);
     if row ~= 1
         speech_loc_div1 = speech_loc_div1';
@@ -200,7 +194,7 @@ if q_adjust == ['No ']
     %second division
     subplot(2,2,2);
     plot(time_div2, pks_div2,'m',speech_t_div2,speech_pk_div2,'gx');
-    q_adjust2 = questdlg('Are the green peaks correct?','Hand Adjustment 2','Yes','No ','Yes');
+    q_adjust2 = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
     if q_adjust2 == ['No ']
         uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
         figure(4);
@@ -211,15 +205,15 @@ if q_adjust == ['No ']
         step_div2 = (time_div2(end)-time_div1(end))/length(time_div2);
         for mm = 1:length(speech_t_div2)
             speech_loc_div2(mm) = round(speech_t_div2(mm)/step_div2);
-        end        
-    elseif q_adjust2 == ['Yes']
+        end
+        figure(4);
+        subplot(2,2,2);
+        plot(time_div2, pks_div2,'m',speech_t_div2,speech_pk_div2,'bx');
+    elseif qadjust2 == ['Yes']
         speech_loc_div2 = speech_loc_div2;
         speech_t_div2 = speech_t_div2;
         speech_pk_div2 = speech_pk_div2;
     end
-    figure(4);
-    subplot(2,2,2);
-    plot(time_div2, pks_div2,'m',speech_t_div2,speech_pk_div2,'bx');
     [row col] = size(speech_loc_div2);
     if row ~= 1
         speech_loc_div2 = speech_loc_div2';
@@ -232,10 +226,13 @@ if q_adjust == ['No ']
     if row ~= 1
         speech_pk_div2 = speech_pk_div2';
     end
+    figure(4);
+    subplot(2,2,2);
+    plot(time_div2, pks_div2,'m',speech_t_div2,speech_pk_div3,'gx');
     %third division
     subplot(2,2,3);
     plot(time_div3, pks_div3,'m',speech_t_div3,speech_pk_div3,'gx');
-    q_adjust3 = questdlg('Are the green peaks correct?','Hand Adjustment 3','Yes','No ','Yes');
+    q_adjust3 = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
     if q_adjust3 == ['No ']
         uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
         figure(4);
@@ -246,15 +243,12 @@ if q_adjust == ['No ']
         step_div3 = (time_div3(end)-time_div2(end))/length(time_div2);
         for mm = 1:length(speech_t_div3)
             speech_loc_div3(mm) = round(speech_t_div3(mm)/step_div3);
-        end        
-    elseif q_adjust3 == ['Yes']
+        end
+    elseif qadjust3 == ['Yes']
         speech_loc_div3 = speech_loc_div3;
         speech_t_div3 = speech_t_div3;
         speech_pk_div3 = speech_pk_div3;
     end
-    figure(4);
-    subplot(2,2,3);
-    plot(time_div3, pks_div3,'m',speech_t_div3,speech_pk_div3,'bx');
     [row col] = size(speech_loc_div3);
     if row ~= 1
         speech_loc_div3 = speech_loc_div3';
@@ -269,8 +263,8 @@ if q_adjust == ['No ']
     end
     %fourth division
     subplot(2,2,4);
-    plot(time_div4, pks_div4,'m',speech_t_div4,speech_pk_div4,'gx');
-    q_adjust4 = questdlg('Are the green peaks correct?','Hand Adjustment 4','Yes','No ','Yes');
+    plot(time_div4, pks_div4,'m',speech_t_div4,speech_pk_div4,'bx');
+    q_adjust4 = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
     if q_adjust4 == ['No ']
         uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
         figure(4);
@@ -281,15 +275,12 @@ if q_adjust == ['No ']
         step_div4 = (time_div4(end)-time_div3(end))/length(time_div4);
         for mm = 1:length(speech_t_div4)
             speech_loc_div4(mm) = round(speech_t_div4(mm)/step_div4);
-        end        
-    elseif q_adjust4 == ['Yes']
+        end
+    elseif qadjust4 == ['Yes']
         speech_loc_div4 = speech_loc_div4;
         speech_t_div4 = speech_t_div4;
         speech_pk_div4 = speech_pk_div4;
     end
-    figure(4);
-    subplot(2,2,4);
-    plot(time_div4, pks_div4,'m',speech_t_div4,speech_pk_div4,'bx');
     [row col] = size(speech_loc_div4);
     if row ~= 1
         speech_loc_div4 = speech_loc_div4';
@@ -312,6 +303,22 @@ elseif q_adjust == ['Yes']
     speech_pk_2 = speech_pk_2;
 end
     
+%     uiwait(msgbox({'Click on the correct speech peaks for the entire waveform.' 'Emphasis should be given to time values (x-axis) rather than peak amplitude (y-axis).' 'Press the Return key when finished.'},'modal'));
+%     clear time_speech_loc_2 speech_pk_2 speech_loc_2
+%     figure(3);
+%     plot(time_max_peak,max_pks,'m');
+%     [time_speech_loc_2, speech_pk_2] = ginput;
+%     step_max_pks = rec_time/length(max_pks);
+%     for mm = 1:length(time_speech_loc_2)
+%         speech_loc_2(mm) = round(time_speech_loc_2(mm)/step_max_pks);
+%     end
+%     figure(3);
+%     plot(time_max_peak,max_pks,'m',time_speech_loc_2,speech_pk_2,'bx')
+% elseif q_adjust == ['Yes']
+%     speech_loc_2 = speech_loc_2;
+%     time_speech_loc_2 = time_speech_loc_2;
+%     speech_pk_2 = speech_pk_2;
+% end
 
 %%
 
@@ -354,9 +361,8 @@ for mm = 1:length(ind_60_new)
     amp_60(mm) = y3_resample(ind_60_new(mm));
 end
 %visualize 60% points
-figure(3);
 hold on;
-plot(t_60,amp_60,'kx');
+plot(t_60,amp_60,'gx');
 hold off;
 
 % %visualize 60% time points on y3
