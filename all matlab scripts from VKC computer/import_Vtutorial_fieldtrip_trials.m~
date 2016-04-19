@@ -1,0 +1,48 @@
+% IMPORT  SEGMENTS into fieldtrip format for Vanderbilt Tutorial
+% bigger epoch window)
+% read in mat file with average data (already preprocessed in Netstation)
+% mod. by rlg 28 september 2010 
+
+clear all;clc
+tic
+%% define subjects
+S{1}='01';  
+%S{2}='02';  
+
+load hdrtemplate_tutorial.mat %this header template contains sampling rate
+%channel labels, tmin (-500ms) and tmax (+1000ms) for the syllable segments
+%time in seconds now
+
+%% define conditions here - must use exact same labels as "Categories"in egi .seg
+bin{1}='Liam_Fiam';
+bin{2}='Liam_Ftro';
+bin{3}='Ltro_Ftro';
+bin{4}='Ltro_Fiam';
+
+    
+for m=1:length(S)
+    suj=S{m};
+    matfilename=cat(2,'tutorial',subj,'.fil.1.segtf.bcr.ref.mat') % bcr files contain single trials (only good segments post-AD) 
+
+    sujdata=load(matfilename);
+    timepoints      = [tmin:(1/samplingrate):tmax]; %had to change this line b/c time is in seconds now
+
+    %% this loop does each condition
+    
+    for b=1:length(bin)
+        data= [];    
+        data.label      = egi_chanlabels; %contains all electrodes - have to take out the ones I don't want later!
+        data.fsample    = samplingrate;
+        for i=1:size(sujdata.(bin{b}),3); %iterates for correct number of trials
+            data.trial{i} = sujdata.(bin{b})(:,:,i);
+            data.time{i}  = timepoints;
+        end
+        outfile= cat(2,'Tutorial',subj,'_',bin{b},'_trials.mat');
+        save(outfile,'data');
+        clear data outfile
+        
+    end
+    clear sujdata matfilename
+end
+
+toc

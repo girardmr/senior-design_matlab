@@ -1,0 +1,83 @@
+% analyze textsetting data
+clear all; clc
+
+load pilotsongs_mus.mat
+
+song = fieldnames(pilot);
+
+%musical analysis
+
+for s = 1:length(song)
+    
+    musdur = pilot.(song{s}).notdur;  
+    
+    pvi_musdur = pvi_ts(musdur); % using A.P's nPVI function for time series
+    
+    pilot.(song{s}).pvimusdur = pvi_musdur; % store new nPvi time series in pilotsong structure
+    
+    clear pvi_musdur musdur
+    
+end
+
+%load speech analysis for each song
+for s = 1: length(song)
+
+    filename = cat(2,song{s},'_spo.txt')
+    data = load(filename)
+
+    spkdur = data(:,2); % duration in seconds
+    spkpit = data(:,3); % mean pitch in Hz
+    pilot.(song{s}).spkdur = spkdur;
+    pilot.(song{s}).spkpit = spkpit;
+
+    pvi_spkdur = pvi_ts(spkdur);
+    
+    pilot.(song{s}).pvispkdur = pvi_spkdur; 
+
+    clear data spkdur spkpit pvispkdur pvimusdur
+    
+end
+
+
+for s= 1:length(song)
+    
+    figure(1)
+
+    % need to plot 2 diff y-axes
+    subplot(1,3,s)
+   
+    Y1 = pilot.(song{s}).pvispkdur;
+    X = 1:1:length(Y1)
+    Y2 = pilot.(song{s}).pvimusdur;
+    
+    plotyy(X,Y1,X,Y2, 'plot')
+    xlabel('syllable-note
+    
+%     plot(pilot.(song{s}).pvispkdur); hold on
+%     plot(pilot.(song{s}).pvimusdur, 'r'); hold off
+    title (cat(2,'nPVI on durations -',song{s}))
+
+    clear X Y1 Y2
+    
+    figure(2)
+    subplot(1,3,s)
+    % need to plot 2 diff y-axes
+    
+    Y1 = pilot.(song{s}).spkpit;
+    X = 1:1:length(Y1)
+    Y2 = pilot.(song{s}).notpit;
+  
+    title (cat(2,'Pitches -',song{s}))
+
+end
+
+save pilotsongs_anlys.mat pilot
+
+%pvidurs=[pvi_rimdur;pvi_musdur]
+% plot(pvidurs)
+% plot(pvi_rimdur); hold on
+% plot(pvi_rimdur); hold on
+% plot(pvi_musdur); hold off
+% plot(pvi_rimdur,'r'); hold on
+% plot(pvi_musdur); hold off
+% pvidurs_Xcel=pvidurs'

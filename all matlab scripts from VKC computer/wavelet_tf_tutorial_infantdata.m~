@@ -1,0 +1,51 @@
+%calculate power with wavelets on trial data (induced) - target words -
+%%quartile data!
+%took about ? minutes to complete for all 16 subjects
+%rlg 30 sept 2010
+
+
+clear all; clc
+tic %calculate time it takes for script to run, "toc" on final line
+
+%% define subjects
+S{1}='02';  S{2}='03';  S{3}='04';
+S{4}='05';  S{5}='06';  S{6}='07';
+S{7}='08';  S{8}='09';  S{9}='10';
+S{10}='13'; S{11}='14'; S{12}='15';
+S{13}='17'; S{14}='18'; S{15}='19';
+S{16}='20';
+
+%% define conditions
+
+bin{1}='neutral';
+bin{2}='small_smile';
+bin{3}='big_smile';
+
+load sopro_ERP_channels.mat % this worked to select just the channels I want... leaves out Cz, occipitals, and mastoids!
+%% calculate wavelet power
+
+for m=1:length(S) %for each subject
+    suj=S{m}; 
+    
+    for b=1:length(bin) %for each condition specified above
+        filename= cat(2,'Tutorial',suj,'_',bin{b},'_trials.mat') % these contain grandaverages
+        load(filename)
+        cfg = [];
+%        cfg.channel= sopro_ERP_channels;
+        cfg.method  = 'wltconvol';
+        cfg.width   =  6; %Qwid;%this can be a vector if you want to do classical-Q
+        cfg.output  = 'pow';
+        cfg.foi     = 4:1:80; %frequencies of interest
+        cfg.toi     = -0.200:0.004:0.800;    %time of interest (whole segment) CAREFUL - time in seconds!
+        cfg.keeptrials = 'no'; %return individual trials or average (default = 'no')
+        TFRwave_ind = freqanalysis(cfg, data);
+
+        outfile= cat(2,'Tutorial',suj,'_',bin{b},'_tfr_ind.mat')
+        save(outfile,'TFRwave_ind');
+        clear data outfile TFRwave_ind
+    end
+    clear filename
+end
+
+toc
+

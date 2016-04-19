@@ -1,0 +1,96 @@
+% plot grandaverage TFRs for 3 conditions in the tutorial.
+% This can be modified to plot single subject data by changing input filenames
+% rlg november 2010
+
+clear all; clc
+
+load tut_layout.mat % this layout excludes EOG channels
+layout = EGI_layout129;
+
+bin{1}='stnd';
+bin{2}='trgt';
+bin{3}='novl';
+
+load(cat(2,bin{1},'_chords_gravg_avblc_evo.mat'));
+bin1 = TFgravg_evo;
+clear TFgravg_evo
+
+load(cat(2,bin{2},'_chords_gravg_avblc_evo.mat'));
+bin2 = TFgravg_evo;
+clear TFgravg_evo
+
+load(cat(2,bin{3},'_chords_gravg_avblc_evo.mat'));
+bin3 = TFgravg_evo;
+clear TFgravg_evo
+
+
+%% INTERACTIVE PLOT - ALL CHANNELS
+cfg = [];
+
+%cfg.channel= SigChan; %just the significant ones in the cluster!
+
+help ft_multiplotTFR
+cfg.xparam = 'time';
+cfg.yparam = 'freq';
+cfg.zparam = 'powspctrm';
+cfg.xlim = [0 0.600]; % time
+cfg.zlim = [-3 3] % SET THESE? power scale
+cfg.ylim = [4 25]; % 
+cfg.interactive  = 'yes';
+cfg.showlabels   = 'yes';
+cfg.colorbar = 'yes';
+cfg.layout = layout; %use this if plotting positive up
+
+figure
+ft_multiplotTFR(cfg, bin1)
+title('standard - evoked')
+
+figure
+ft_multiplotTFR(cfg, bin2)
+title('target - evoked')
+
+figure
+ft_multiplotTFR(cfg, bin3)
+title('novel - evoked')
+
+
+%% Single channel plot - Cz
+
+figure
+
+cfg.channel = 'Cz';
+
+cfg.colorbar = 'no';
+
+subplot(2,3,1)
+ft_singleplotTFR(cfg,bin1)
+
+time4ticks = [0:0.200:0.600]; %% %% times on axis where you want ticks 
+set(gca,'XTick',time4ticks);
+set(gca,'XTickLabel',time4ticks*1000); % plots time in ms
+xlabel('Time (ms)')
+ylabel('Amplitude')
+title(bin{1})
+
+
+subplot(2,3,2)
+ft_singleplotTFR(cfg,bin2)
+set(gca,'XTick',time4ticks);
+set(gca,'XTickLabel',time4ticks*1000); % plots time in ms
+xlabel('Time (ms)')
+ylabel('Amplitude')
+title(bin{2})
+
+subplot(2,3,3)
+ft_singleplotTFR(cfg,bin3)
+set(gca,'XTick',time4ticks);
+set(gca,'XTickLabel',time4ticks*1000); % plots time in ms
+xlabel('Time (ms)')
+ylabel('Amplitude')
+title(bin{3})
+
+saveas(gcf, 'Evoked grand average Cz, tutorial', 'fig'); % save as a Matlab Figure file
+saveas(gcf, 'Evoked grand average Cz, tutorial', 'tif'); % save as a tiff file
+
+
+

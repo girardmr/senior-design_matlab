@@ -1,0 +1,28 @@
+
+
+song{1} = 'jhenry'
+song{2} = 'fire'
+song{3} = 'wind'
+
+pilot = {};
+
+for s = 1:length(song)
+    
+    filename = 'fire.txt'
+    fid = fopen(filename);
+    
+    music = textscan(fid, '%s %f32 %d8 %f32', 'HeaderLines',1)
+    
+    fclose(fid);
+    
+    pilot.(song).syllables = C.music{1}
+    pilot.(song).notdur = C.music{4} % durations in fractions of a beat
+    pilot.(song).notpit = C.music{3} % pitch in midicode
+    
+       
+    clear music filename fid
+    
+end
+
+    
+    

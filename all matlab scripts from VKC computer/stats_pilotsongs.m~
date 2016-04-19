@@ -1,0 +1,85 @@
+% analyze textsetting data
+clear all; clc
+
+%musical analysis
+ 
+load pilotsongs_anlys.mat
+
+song = fieldnames(pilot);
+numSongs = length(song); 
+data = {};
+%calc corr on duration - nPVI results
+for s= 1:numSongs
+    
+    
+    Y1 = pilot.(song{s}).pvispkdur;
+    X = 1:1:length(Y1)
+    Y2 = pilot.(song{s}).pvimusdur;
+    data.(song{s}).npvi = [Y1 Y2];
+    [r,p] = corrcoef(data.(song{s}).npvi)
+    data.(song{s}).npvicorr = [r(1,2) p(1,2)];
+
+    clear X Y1 Y2 r p
+    
+    
+end
+
+%calc corr on raw duration results
+for s= 1:numSongs
+    
+    
+    Y1 = pilot.(song{s}).spkdur;
+    X = 1:1:length(Y1)
+    Y2 = pilot.(song{s}).notdur;
+    data.(song{s}).rawdur = [Y1 Y2];
+    [r,p] = corrcoef(data.(song{s}).rawdur )
+    data.(song{s}).rawdurcorr = [r(1,2) p(1,2)];
+
+    clear X Y1 Y2 r p
+    
+    
+end
+% PROBLEM BECAUSE MIDICODES ARE INTEGERS AND PITCH IN HZ IS NOT??
+
+%%  pitch 
+for s = 1:numSongs
+    
+    
+    Y1 = pilot.(song{s}).spkpit;
+    X = 1:1:length(Y1);
+
+    
+    Y2 = pilot.(song{s}).notpitHz;
+    
+    data.(song{s}).pitchHz = [Y1 Y2];
+    
+    [r,p] = corrcoef(data.(song{s}).pitchHz);
+    data.(song{s}).pitchHzcorr = [r(1,2) p(1,2)]
+
+    clear X Y1 Y2 pit pitHz r p
+    
+     
+end
+
+% summarize results
+
+
+results = {};
+
+%fid = fopen('pilotsongs_results.txt','w');
+for s= 1:numSongs
+    
+    results{s,1} = song{s};
+    results{2} = data.(song{s}).rawdurcorr{1};
+    
+    results{s,4:5} = data.(song{s}).npvicorr;
+    results{s,6:7} = data.(song{s}).pitchHzcorr;
+    
+    %fprintf(fid, '%s %s %s %s \n', TableSegStatus{s,:});
+    
+end
+
+save results_pilotsongs.mat
+    
+    
+    
