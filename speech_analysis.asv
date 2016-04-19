@@ -254,7 +254,7 @@ y3_2 = y3(t_divpt+1:end);
 
 %first half of total data set, divide into halves
 num_el_max_pks1 = length(time_max_peak1);
-section1_divpt_1 = round(numel_max_pks1/2);
+section1_divpt_1 = round(num_el_max_pks1/2);
 section1_t_1 = time_max_peak1(1:section1_divpt_1);
 section1_pks_1 = max_pks1(1:section1_divpt_1);
 section2_t_1 = time_max_peak1(section1_divpt_1+1:end);
@@ -278,7 +278,7 @@ end
 
 %second half of total data set, divide into halves
 num_el_max_pks2 = length(time_max_peak2);
-section1_divpt_2 = round(numel_max_pks2/2);
+section1_divpt_2 = round(num_el_max_pks2/2);
 section1_t_2 = time_max_peak2(1:section1_divpt_2);
 section1_pks_2 = max_pks2(1:section1_divpt_2);
 section2_t_2 = time_max_peak2(section1_divpt_2+1:end);
@@ -305,7 +305,7 @@ end
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
 if q_adjust == ['No ']
     figure(4);
-    suptitle('Speech Peaks: Hand Adjustments');
+    suptitle('First Data Set. Speech Peaks: Hand Adjustments');
     %first data set, first half
     subplot(2,1,1);
     plot(section1_t_1, section1_pks_1,'m',section1_speech_t_1,section1_speech_pk_2_1,'gx');
@@ -322,7 +322,7 @@ if q_adjust == ['No ']
         clear section1_speech_t_1 section1_speech_pk_2_1
         [section1_speech_t_1, section1_speech_pk_2_1] = ginput;
         step_div1 = (section1_t_1(end))/length(section1_t_1);
-        for mm = 1:length(section1_speech_pk_2_1)
+        for mm = 1:length(section1_speech_t_1)
             section1_speech_loc_1(mm) = round(section1_speech_pk_2_1(mm)/step_div1);
         end
     elseif q_adjust1 == ['Yes']
@@ -332,7 +332,7 @@ if q_adjust == ['No ']
     end
     figure(4);
     subplot(2,1,1);
-    plot(section1_t_1, section1_pks_1,'m',section1_speech_t_1,section1_speech_pks_2_1,'bx');
+    plot(section1_t_1, section1_pks_1,'m',section1_speech_t_1,section1_speech_pk_2_1,'bx');
     %ensure that all vectors are row vectors
     [row col] = size(section1_speech_loc_1);
     if row ~= 1
@@ -394,8 +394,8 @@ end
 
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
 if q_adjust == ['No ']
-    figure(7);
-    suptitle('Speech Peaks: Hand Adjustments');
+    figure(4);
+    suptitle('Second Data Set. Speech Peaks: Hand Adjustments');
     %second data set, first half
     subplot(2,1,1);
     plot(section1_t_2, section1_pks_2,'m',section1_speech_t_2,section1_speech_pk_2_2,'gx');
@@ -422,7 +422,7 @@ if q_adjust == ['No ']
     end
     figure(4);
     subplot(2,1,1);
-    plot(section1_t_2, section1_pks_2,'m',section1_speech_t_2,section1_speech_pks_2_2,'bx');
+    plot(section1_t_2, section1_pks_2,'m',section1_speech_t_2,section1_speech_pk_2_2,'bx');
     %ensure that all vectors are row vectors
     [row col] = size(section1_speech_loc_2);
     if row ~= 1
@@ -558,26 +558,21 @@ for mm = 1:length(ind_60_new1)
     amp_60_1(mm) = y3_resample1(ind_60_new1(mm)-resample_start_ind1);
 end
 
-for mm = 1:length(ind_60_new2)
-    t_60_2(mm) = ind_60_new2(mm)*step_resample2-step_resample2;
-    amp_60_2(mm) = y3_resample2(ind_60_new2(mm)-resample_start_ind2);
+for nn = 1:length(ind_60_new2)
+    t_60_2(nn) = ind_60_new2(nn)*step_resample2-step_resample2;
+    amp_60_2(nn) = y3_resample2(ind_60_new2(nn)-resample_start_ind2);
 end
 
 %concatenate speech beats
-t_60 = []
+t_60 = [t_60_1 t_60_2];
+amp_60 = [amp_60_1 amp_60_2];
 
 %visualize 60% points
 figure(3);
 hold on;
-plot(time_max_peak,t_60,amp_60,'kx');
+plot(time_max_peak,max_pks,'m',t_60,amp_60,'kx');
 title('Speech Beats');
 hold off;
-
-    
-
-
-
-
 
 
 %% Peak correction
