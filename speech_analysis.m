@@ -167,7 +167,7 @@ plot(time_max_peak, max_pks, 'm', time_speech_loc_2, speech_pk_2, 'x')
 %truncate data
 truncate = questdlg('Do you wish to truncate the data?','Truncation','Yes','No ','No ');
 if truncate == ['Yes']
-    uiwait(msgbox({'Click where you wish to truncate the data' 'Press the Return key when finished.'},'modal'));
+    uiwait(msgbox({'Click where you wish to truncate the data' 'Be sure selected data does not exceed 40 seconds.' 'Press the Return key when finished.'},'modal'));
     [trunc_x, trunc_y] = ginput; %returns time and peak amplitude of chosen point
     %select data only up to truncation point
     mm = 1;
@@ -254,6 +254,7 @@ y3_2 = y3(t_divpt+1:end);
 
 %first half of total data set, divide into halves
 num_el_max_pks1 = length(time_max_peak1);
+section1_divpt_1 = round(num_el_max_pks1/2);
 section1_t_1 = time_max_peak1(1:section1_divpt_1);
 section1_pks_1 = max_pks1(1:section1_divpt_1);
 section2_t_1 = time_max_peak1(section1_divpt_1+1:end);
@@ -277,6 +278,7 @@ end
 
 %second half of total data set, divide into halves
 num_el_max_pks2 = length(time_max_peak2);
+section1_divpt_2 = round(num_el_max_pks2/2);
 section1_t_2 = time_max_peak2(1:section1_divpt_2);
 section1_pks_2 = max_pks2(1:section1_divpt_2);
 section2_t_2 = time_max_peak2(section1_divpt_2+1:end);
@@ -297,12 +299,17 @@ for hh = 1:length(time_speech_loc_2_2)
         gg = gg+1;
     end
 end
+step_maxpks = (time_max_peak(end)-time_max_peak(1))/numel(time_max_peak);
         
 %Hand select peaks
 
+figure(4);
+plot(time_max_peak1,max_pks1,'m',time_speech_loc_2_1,speech_pk_2_1,'x');
+title('First Data Set: Speech Peaks');
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
 if q_adjust == ['No ']
     figure(4);
+    suptitle('First Data Set. Speech Peaks: Hand Adjustments');
     %first data set, first half
     subplot(2,1,1);
     plot(section1_t_1, section1_pks_1,'m',section1_speech_t_1,section1_speech_pk_2_1,'gx');
@@ -318,9 +325,9 @@ if q_adjust == ['No ']
         %correct points
         clear section1_speech_t_1 section1_speech_pk_2_1
         [section1_speech_t_1, section1_speech_pk_2_1] = ginput;
-        step_div1 = (section1_t_1(end))/length(section1_t_1);
-        for mm = 1:length(section1_speech_pk_2_1)
-            section1_speech_loc_1(mm) = round(section1_speech_pk_2_1(mm)/step_div1);
+        %step_div1 = (section1_t_1(end))/length(section1_t_1);
+        for mm = 1:length(section1_speech_t_1)
+            section1_speech_loc_1(mm) = round(section1_speech_t_1(mm)/step_maxpks);
         end
     elseif q_adjust1 == ['Yes']
         section1_speech_loc_1 = section1_speech_loc_1;
@@ -329,6 +336,7 @@ if q_adjust == ['No ']
     end
     figure(4);
     subplot(2,1,1);
+    plot(section1_t_1, section1_pks_1,'m',section1_speech_t_1,section1_speech_pk_2_1,'bx');
     %ensure that all vectors are row vectors
     [row col] = size(section1_speech_loc_1);
     if row ~= 1
@@ -353,9 +361,9 @@ if q_adjust == ['No ']
         plot(section2_t_1, section2_pks_1,'m');
         clear section2_speech_t_1 section2_speech_pk_2_1
         [section2_speech_t_1, section2_speech_pk_2_1] = ginput;
-        step_div2 = (section2_t_1(end)-section1_t_1(end))/length(section2_t_1);
+        %step_div2 = (section2_t_1(end)-section1_t_1(end))/length(section2_t_1);
         for mm = 1:length(section2_speech_t_1)
-            section2_speech_loc_1(mm) = round(section2_speech_t_1(mm)/step_div2);
+            section2_speech_loc_1(mm) = round(section2_speech_t_1(mm)/step_maxpks);
         end        
     elseif q_adjust2 == ['Yes']
         section2_speech_loc_1 = section2_speech_loc_1;
@@ -388,8 +396,14 @@ elseif q_adjust == ['Yes']
     speech_pk_2_1 = speech_pk_2_1;
 end
 
+figure(4);
+subplot(1,1,1);
+plot(time_max_peak2,max_pks2,'m',time_speech_loc_2_2,speech_pk_2_2,'x');
+title('Second Data Set: Speech Peaks');
 q_adjust = questdlg('Are these peaks correct?','Hand Adjustment','Yes','No ','Yes');
 if q_adjust == ['No ']
+    figure(4);
+    suptitle('Second Data Set. Speech Peaks: Hand Adjustments');
     %second data set, first half
     subplot(2,1,1);
     plot(section1_t_2, section1_pks_2,'m',section1_speech_t_2,section1_speech_pk_2_2,'gx');
@@ -405,16 +419,18 @@ if q_adjust == ['No ']
         %correct points
         clear section1_speech_t_2 section1_speech_pk_2_2
         [section1_speech_t_2, section1_speech_pk_2_2] = ginput;
-        step_div1 = (section1_t_2(end))/length(section1_t_2);
-        for mm = 1:length(section1_speech_pk_2_2)
-            section1_speech_loc_2(mm) = round(section1_speech_pk_2_2(mm)/step_div1);
+        %step_div1 = (section1_t_2(end))/length(section1_t_2);
+        for mm = 1:length(section1_speech_t_2)
+            section1_speech_loc_2(mm) = round(section1_speech_t_2(mm)/step_maxpks);
         end
     elseif q_adjust1 == ['Yes']
         section1_speech_loc_2 = section1_speech_loc_2;
         section1_speech_t_2 = section1_speech_t_2;
         section1_speech_pk_2_2 = section1_speech_pk_2_2;
     end
+    figure(4);
     subplot(2,1,1);
+    plot(section1_t_2, section1_pks_2,'m',section1_speech_t_2,section1_speech_pk_2_2,'bx');
     %ensure that all vectors are row vectors
     [row col] = size(section1_speech_loc_2);
     if row ~= 1
@@ -439,15 +455,16 @@ if q_adjust == ['No ']
         plot(section2_t_2, section2_pks_2,'m');
         clear section2_speech_t_2 section2_speech_pk_2_2
         [section2_speech_t_2, section2_speech_pk_2_2] = ginput;
-        step_div2 = (section2_t_2(end)-section1_t_2(end))/length(section2_t_2);
+        %step_div2 = (section2_t_2(end)-section2_t_2(1))/length(section2_t_2);
         for mm = 1:length(section2_speech_t_2)
-            section2_speech_loc_2(mm) = round(section2_speech_t_2(mm)/step_div2);
-        end        
+            section2_speech_loc_2(mm) = round(section2_speech_t_2(mm)/step_maxpks);
+        end     
     elseif q_adjust2 == ['Yes']
         section2_speech_loc_2 = section2_speech_loc_2;
         section2_speech_t_2 = section2_speech_t_2;
         section2_speech_pk_2_2 = section2_speech_pk_2_2;
     end
+    figure(4);
     subplot(2,1,2);
     plot(section2_t_2, section2_pks_2,'m',section2_speech_t_2,section2_speech_pk_2_2,'bx');
     [row col] = size(section2_speech_loc_2);
@@ -476,19 +493,19 @@ end
 %Locate speech beat
 
 %resample y3  
-t_set1 = section2_t_1(end) - section1_t_1(1);
-size_resample1 = round(t_set1*150); 
+t_sect1 = section2_t_1(end) - section1_t_1(1);
+size_resample1 = round(t_sect1*150); 
 y3_resample1 = resample(y3_1,size_resample1,length(y3_1))';
-step_resample1 = t_set1/size_resample1;
+step_resample1 = t_sect1/size_resample1;
 time_resample1 = [section1_t_1(1):step_resample1:section2_t_1(end)-step_resample1];
 resample_start_ind1 = round(time_resample1(1)/step_resample1);
 speech_loc_resample1 = round(speech_loc_2_1*(size_resample1/length(max_pks1)));
 speech_loc_resample_t1 = speech_loc_resample1*step_resample1-step_resample1;
 
-t_set2 = section2_t_2(end) - section1_t_2(1);
-size_resample2 = round(t_set2*150); 
+t_sect2 = section2_t_2(end) - section1_t_2(1);
+size_resample2 = round(t_sect2*150); 
 y3_resample2 = resample(y3_2,size_resample2,length(y3_2))';
-step_resample2 = t_set2/size_resample2;
+step_resample2 = t_sect2/size_resample2;
 time_resample2 = [section1_t_2(1):step_resample2:section2_t_2(end)-step_resample2];
 resample_start_ind2 = round(time_resample2(1)/step_resample2);
 speech_loc_resample2 = round(speech_loc_2_2*(size_resample2/length(max_pks2)));
@@ -497,6 +514,7 @@ speech_loc_resample_t2 = speech_loc_resample2*step_resample2-step_resample2;
 %locate indices of points 60% up waveform
 for kk = 1:length(speech_pk_2_1)
    ind_found = find(y3_resample1>((0.6*speech_pk_2_1(kk))-(0.1*speech_pk_2_1(kk))) & y3_resample1<=((0.6*speech_pk_2_1(kk))+(0.1*speech_pk_2_1(kk))));
+   ind_found = ind_found+resample_start_ind1; %necessary for second half??
    %if there are only two indices found
    if length(ind_found) == 2
        ind_60_1(kk) = ind_found(1);
@@ -511,6 +529,7 @@ end
 
 for kk = 1:length(speech_pk_2_2)
    ind_found = find(y3_resample2>((0.6*speech_pk_2_2(kk))-(0.1*speech_pk_2_2(kk))) & y3_resample2<=((0.6*speech_pk_2_2(kk))+(0.1*speech_pk_2_2(kk))));
+   ind_found = ind_found+resample_start_ind2; %necessary for second half??
    %if there are only two indices found
    if length(ind_found) == 2
        ind_60_2(kk) = ind_found(1);
@@ -536,6 +555,7 @@ z = 1;
 for zz = 1:length(ind_60_2)
     if ind_60_2(zz) ~= 0
         ind_60_new2(z) = ind_60_2(zz);
+        z = z+1;
     end
 end
 
@@ -546,10 +566,15 @@ for mm = 1:length(ind_60_new1)
     amp_60_1(mm) = y3_resample1(ind_60_new1(mm)-resample_start_ind1);
 end
 
+for nn = 1:length(ind_60_new2)
+    t_60_2(nn) = ind_60_new2(nn)*step_resample2-step_resample2;
+    amp_60_2(nn) = y3_resample2(ind_60_new2(nn)-resample_start_ind2);
 end
 
 %concatenate speech beats
+ind_60_new = [ind_60_new1 ind_60_new2];
 t_60 = [t_60_1 t_60_2];
+amp_60 = [amp_60_1 amp_60_2];
 
 %visualize 60% points
 figure(3);
